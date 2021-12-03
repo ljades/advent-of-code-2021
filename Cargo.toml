@@ -10,4 +10,9 @@ name = "p1"
 test = false
 bench = false
 
+[[bin]]
+name = "p3"
+test = false
+bench = true
+
 [dependencies]
