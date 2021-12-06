@@ -16,3 +16,4 @@ test = false
 bench = true
 
 [dependencies]
+regex = "1"
