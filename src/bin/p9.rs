@@ -1,35 +1,7 @@
 use std::collections::HashSet;
 
 use advent_of_code_2021::inputs::read_input;
-
-
-#[derive(Copy, Clone, Hash)]
-struct Position(usize, usize);
-
-impl PartialEq for Position {
-    fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0 && self.1 == other.1
-    }
-}
-impl Eq for Position {}
-
-struct Direction(isize, isize);
-
-impl Position {
-    fn neighbor(
-        &self, direction: &Direction, y_bound: usize, x_bound: usize
-    ) -> Option<Position> {
-        let new_y: isize = self.0 as isize + direction.0;
-        let new_x: isize = self.1 as isize + direction.1;
-        if new_y >= 0 && new_y < y_bound as isize && new_x >= 0 && new_x < x_bound as isize {
-            Some(Position(new_y as usize, new_x as usize))
-        } else {
-            None
-        }
-    }
-}
-
-const DIRECTIONS: [Direction; 4] = [Direction(-1, 0), Direction(1, 0), Direction(0, -1), Direction(0, 1)];
+use advent_of_code_2021::shared::positions::{Position, NON_DIAG_DIRECTIONS};
 
 struct HeightMap {
     grid: Vec<Vec<u8>>,
@@ -44,7 +16,7 @@ impl HeightMap {
         for row_index in 0..row_size {
             for col_index in 0..col_size {
                 let position = Position(row_index, col_index);
-                let neighbors: Vec<Option<Position>> = DIRECTIONS.iter().map(
+                let neighbors: Vec<Option<Position>> = NON_DIAG_DIRECTIONS.iter().map(
                     |direction| position.neighbor(direction, row_size, col_size)
                 ).collect();
                 if !neighbors.iter().any(|neighbor| {
@@ -76,7 +48,7 @@ impl HeightMap {
         while let Some(curr_position) = dfs_stack.pop() {
             basin_size += 1;
             marked_positions.insert(curr_position);
-            let neighbors: Vec<Option<Position>> = DIRECTIONS.iter().map(
+            let neighbors: Vec<Option<Position>> = NON_DIAG_DIRECTIONS.iter().map(
                 |direction| curr_position.neighbor(direction, row_size, col_size)
             ).collect();
             for neighbor in neighbors.iter() {
